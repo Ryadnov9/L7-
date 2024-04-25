@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шифрування та дешифрування</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+
+<h2>Шифрування та дешифрування</h2>
+<label for="outputText">Вихідний текст:</label><br>
+<textarea id="inputText" rows="4" cols="50"></textarea><br>
+<label for="outputText">Вихідний ключ:</label><br>
+<input type="text" id="inputKey" value=""><br><br>
+
+<button onclick="encryptText()">Зашифрувати</button>
+<button onclick="decryptText()">Розшифрувати</button><br><br>
+
+<label for="outputText">Вихідний текст:</label><br>
+<textarea id="outputText" rows="4" cols="50" readonly></textarea>
+
+<script>
+    function strToUpperCase(text) {
+        return text.toUpperCase();
+    }
+
+    function changeText(text, key, type) {
+        text = strToUpperCase(text);
+        key = strToUpperCase(key);
+
+        const alphabet = '0123456789АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ';
+
+        let result = '';
+        for (let i = 0; i < text.length; i++) {
+            let charIndex = alphabet.indexOf(text[i]);
+
+            if (charIndex === -1) {
+                // Character not found in the alphabet, just append as is
+                result += text[i];
+                continue;
+            }
+
+            let keyIndex = alphabet.indexOf(key[i % key.length]);
+
+            let newIndex;
+            if (type === 'encrypt') {
+                newIndex = (charIndex + keyIndex) % alphabet.length;
+            } else if (type === 'decrypt') {
+                newIndex = (charIndex - keyIndex + alphabet.length) % alphabet.length;
+            }
+
+            result += alphabet[newIndex];
+        }
+
+        return result;
+    }
+
+    function encryptText() {
+        let text = document.getElementById("inputText").value;
+        let key = document.getElementById("inputKey").value;
+        let encryptedText = changeText(text, key, 'encrypt');
+        document.getElementById("outputText").value = encryptedText;
+    }
+
+    function decryptText() {
+        let text = document.getElementById("inputText").value;
+        let key = document.getElementById("inputKey").value;
+        let decryptedText = changeText(text, key, 'decrypt');
+        document.getElementById("outputText").value = decryptedText;
+    }
+</script>
+
+</body>
+</html>
